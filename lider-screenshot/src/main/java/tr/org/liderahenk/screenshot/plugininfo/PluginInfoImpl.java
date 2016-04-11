@@ -33,5 +33,11 @@ public class PluginInfoImpl implements IPluginInfo {
 	public boolean isPolicyPlugin() {
 		return false;
 	}
+
+	@Override
+	public boolean isxBased() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

@@ -13,7 +13,7 @@ import tr.org.liderahenk.lider.core.api.service.ICommandContext;
 import tr.org.liderahenk.lider.core.api.service.ICommandResult;
 import tr.org.liderahenk.lider.core.api.service.ICommandResultFactory;
 import tr.org.liderahenk.lider.core.api.service.enums.CommandResultStatus;
-import tr.org.liderahenk.lider.core.api.rest.requests.ITaskCommandRequest;
+import tr.org.liderahenk.lider.core.api.rest.requests.ITaskRequest;
 
 public class ScreenshotCommand extends BaseCommand {
 
@@ -27,7 +27,7 @@ public class ScreenshotCommand extends BaseCommand {
 	public ICommandResult execute(ICommandContext context) {
 		
 		// TODO Modify parameter map before sending it to agent(s).
-		ITaskCommandRequest req = context.getRequest();
+		ITaskRequest req = context.getRequest();
 		Map<String, Object> parameterMap = req.getParameterMap();
 		parameterMap.put("dummy-param", "dummy-param-value");
 		
