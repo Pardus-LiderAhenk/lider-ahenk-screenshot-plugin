@@ -2,21 +2,24 @@ package tr.org.liderahenk.screenshot.handlers;
 
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.swt.widgets.Display;
 
 import tr.org.liderahenk.liderconsole.core.handlers.MultipleSelectionHandler;
+import tr.org.liderahenk.screenshot.dialogs.ScreenshotTaskDialog;
 
-//TODO use MultipleSelectionHandler if this task support multiple LDAP entries/DNs otherwise use SingleSelectionHandler.
-
+/**
+ * Task execution handler for Screenshot plugin.
+ * 
+ * @author <a href="mailto:mine.dogan@agem.com.tr">Mine Dogan</a>
+ *
+ */
 public class ScreenshotTaskHandler extends MultipleSelectionHandler {
-	
-	private Logger logger = LoggerFactory.getLogger(ScreenshotTaskHandler.class);
 	
 	@Override
 	public void executeWithDNSet(Set<String> dnSet) {
-		// TODO dnSet contains distinguished names (DN) of the selected LDAP entries.
-		// TODO open a Task dialog here, inside the dialog use TaskUtils to execute it!
+		ScreenshotTaskDialog dialog = new ScreenshotTaskDialog(Display.getDefault().getActiveShell(), dnSet);
+		dialog.create();
+		dialog.open();
 	}
 	
 }

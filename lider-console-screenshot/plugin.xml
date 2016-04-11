@@ -77,7 +77,7 @@
 		<!-- Add menu command for "profile definition" dialog -->
 		<menuContribution
       		allPopups="false"
-            locationURI="popup:tr.org.liderahenk.liderconsole.menus.ProfileDefinition?after=additions">
+            locationURI="menu:tr.org.liderahenk.liderconsole.menus.ProfileDefinition?after=additions">
  				<command
                   commandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile"
                   id="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile"
