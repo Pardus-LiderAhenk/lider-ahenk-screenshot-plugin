@@ -1,10 +1,8 @@
 package tr.org.liderahenk.screenshot.handlers;
 
-import java.util.Set;
-
 import org.eclipse.swt.widgets.Display;
 
-import tr.org.liderahenk.liderconsole.core.handlers.MultipleSelectionHandler;
+import tr.org.liderahenk.liderconsole.core.handlers.SingleSelectionHandler;
 import tr.org.liderahenk.screenshot.dialogs.ScreenshotTaskDialog;
 
 /**
@@ -13,11 +11,11 @@ import tr.org.liderahenk.screenshot.dialogs.ScreenshotTaskDialog;
  * @author <a href="mailto:mine.dogan@agem.com.tr">Mine Dogan</a>
  *
  */
-public class ScreenshotTaskHandler extends MultipleSelectionHandler {
+public class ScreenshotTaskHandler extends SingleSelectionHandler {
 	
 	@Override
-	public void executeWithDNSet(Set<String> dnSet) {
-		ScreenshotTaskDialog dialog = new ScreenshotTaskDialog(Display.getDefault().getActiveShell(), dnSet);
+	public void executeWithDn(String dn) {
+		ScreenshotTaskDialog dialog = new ScreenshotTaskDialog(Display.getDefault().getActiveShell(), dn);
 		dialog.create();
 		dialog.open();
 	}

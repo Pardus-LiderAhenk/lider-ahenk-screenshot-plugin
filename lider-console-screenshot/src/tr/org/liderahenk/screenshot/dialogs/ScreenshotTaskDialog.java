@@ -1,40 +1,89 @@
 package tr.org.liderahenk.screenshot.dialogs;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.e4.core.services.events.IEventBroker;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
-import tr.org.liderahenk.screenshot.constants.ScreenshotConstants;
+import tr.org.liderahenk.liderconsole.core.model.TaskStatus;
+import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.screenshot.i18n.Messages;
-import tr.org.liderahenk.screenshot.utils.ScreenshotUtils;
+import tr.org.liderahenk.screenshot.constants.ScreenshotConstants;
+import tr.org.liderahenk.screenshot.dialogs.ScreenshotTaskDialog;
 
 /**
- * Task execution dialog for Screenshot plugin.
  * 
  * @author <a href="mailto:mine.dogan@agem.com.tr">Mine Dogan</a>
  *
  */
 public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	
-	private Combo cmbFormat;
-	
-	// Combo values & i18n labels
-	private final String[] formatArr = new String[] { "PNG", "JPEG" };
+	private static final Logger logger = LoggerFactory.getLogger(ScreenshotTaskDialog.class);
 
-	public ScreenshotTaskDialog(Shell parentShell, Set<String> dnSet) {
-		super(parentShell, dnSet);
+	private IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
+
+	public ScreenshotTaskDialog(Shell parentShell, String dn) {
+		super(parentShell, dn);
+		// TODO improvement. (after XMPPClient fix) Instead of 'TASK' topic use
+		// plugin name as event topic
+		eventBroker.subscribe(LiderConstants.EVENT_TOPICS.TASK, eventHandler);
 	}
 	
+	private EventHandler eventHandler = new EventHandler() {
+		@Override
+		public void handleEvent(final Event event) {
+			Job job = new Job("TASK") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+
+					monitor.beginTask("SCREENSHOT", 100);
+
+					try {
+
+						String body = (String) event.getProperty("org.eclipse.e4.data");
+						TaskStatus taskStatus = new ObjectMapper().readValue(body, TaskStatus.class);
+						Map<String, Object> responseData = taskStatus.getResponseData();
+
+						Image screenshot = (Image) responseData.get("screenshot");
+
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						Notifier.error("", Messages.getString("UNEXPECTED_ERROR_TAKING_SCREENSHOT"));
+					}
+
+					monitor.worked(100);
+					monitor.done();
+
+					return Status.OK_STATUS;
+				}
+			};
+
+			job.setUser(true);
+			job.schedule();
+		}
+	};
+	
+	@Override
+	public boolean close() {
+		eventBroker.unsubscribe(eventHandler);
+		return super.close();
+	}
+
 	@Override
 	public String createTitle() {
 		return Messages.getString("TAKE_SCREENSHOT");
@@ -42,25 +91,6 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	@Override
 	public Control createTaskDialogArea(Composite parent) {
-		
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(2, false));
-
-		Label lblFormat = new Label(composite, SWT.NONE);
-		lblFormat.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		lblFormat.setText(Messages.getString("IMAGE_FORMAT"));
-		
-		cmbFormat = new Combo(composite, SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
-		cmbFormat.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		for (int i = 0; i < formatArr.length; i++) {
-			String format = formatArr[i];
-			if (format != null && !format.isEmpty()) {
-				cmbFormat.add(format);
-				cmbFormat.setData(i + "", formatArr[i]);
-			}
-		}
-		cmbFormat.setEnabled(true);
-		
 		return null;
 	}
 
@@ -71,15 +101,12 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	@Override
 	public Map<String, Object> getParameterMap() {
-		
-		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		parameterMap.put(ScreenshotConstants.PARAMETERS.FORMAT, ScreenshotUtils.getSelectedValue(cmbFormat));
-		return parameterMap;
+		return null;
 	}
 
 	@Override
 	public String getCommandId() {
-		return "RUN";
+		return "TAKE-SCREENSHOT";
 	}
 
 	@Override
@@ -91,7 +118,5 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	public String getPluginVersion() {
 		return ScreenshotConstants.PLUGIN_VERSION;
 	}
-
-
 
 }
