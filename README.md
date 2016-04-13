@@ -8,4 +8,4 @@ Lider Ahenk screenshot plugin.
       lider-console-screenshot/		--> Lider Console plugin
       lider-screenshot/				--> Lider plugin
       ahenk-screenshot/				--> Ahenk plugin
-      scripts/							--> helper scripts (such as automated plugin export)git status
+      scripts/						--> helper scripts (such as automated plugin export)
