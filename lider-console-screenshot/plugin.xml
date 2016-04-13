@@ -155,7 +155,7 @@
 	<!-- Add extension point contribution for "policy execution" dialogs -->
 	<extension
   		point="tr.org.liderahenk.liderconsole.core.policymenu">
-  		<policyItem label="%command.profile" pluginName="lider-screenshot" pluginVersion="1.0.0" profileCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile" />
+  		<policyItem label="%command.profile" pluginName="screenshot" pluginVersion="1.0.0" profileCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile" />
   	</extension>
   	
 </plugin>
