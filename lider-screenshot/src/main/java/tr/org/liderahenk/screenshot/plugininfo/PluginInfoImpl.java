@@ -6,7 +6,7 @@ public class PluginInfoImpl implements IPluginInfo {
 	
 	@Override
 	public String getPluginName() {
-		return "lider-screenshot";
+		return "screenshot";
 	}
 
 	@Override
@@ -21,7 +21,7 @@ public class PluginInfoImpl implements IPluginInfo {
 
 	@Override
 	public boolean isMachineOriented() {
-		return false;
+		return true;
 	}
 
 	@Override

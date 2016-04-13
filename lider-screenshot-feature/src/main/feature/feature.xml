@@ -30,7 +30,6 @@
 
     <feature name="lider-screenshot-bundles" version="${project.version}">
 		<bundle>mvn:tr.org.liderahenk/lider-screenshot/${project.version}</bundle>
-		<bundle>mvn:tr.org.liderahenk/lider-screenshot-db/${project.version}</bundle>
     </feature>
 
     <feature name="lider-screenshot-dependencies" version="${project.version}">

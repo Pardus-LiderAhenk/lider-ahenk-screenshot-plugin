@@ -3,12 +3,10 @@
 
   <!-- ICommand implementation is used to process a task execution -->
   <service 
-      ref="ScreenshotCommand"
+      ref="TakeScreenshotCommand"
       interface="tr.org.liderahenk.lider.core.api.plugin.ICommand" />
-  <bean id="ScreenshotCommand" 
-        class="tr.org.liderahenk.screenshot.commands.ScreenshotCommand">
-        <property name="pluginDbService" ref="pluginDbService"/>
-        <property name="logService" ref="logService"/>
+  <bean id="TakeScreenshotCommand" 
+        class="tr.org.liderahenk.screenshot.commands.TakeScreenshotCommand">
         <property name="resultFactory" ref="resultFactory"/>
   </bean>
   
@@ -18,7 +16,5 @@
       interface="tr.org.liderahenk.lider.core.api.plugin.IPluginInfo" />
   <bean id="pluginInfoImpl" class="tr.org.liderahenk.screenshot.plugininfo.PluginInfoImpl" />
   
-  <reference id="pluginDbService" interface="tr.org.liderahenk.lider.core.api.persistence.IPluginDbService" />
-  <reference id="logService" interface="tr.org.liderahenk.lider.core.api.log.IOperationLogService" />
   <reference id="resultFactory" interface="tr.org.liderahenk.lider.core.api.service.ICommandResultFactory"/>
 </blueprint>
