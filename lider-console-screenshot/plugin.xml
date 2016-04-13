@@ -10,11 +10,6 @@
       </category>         
       <command
             categoryId="tr.org.liderahenk.liderconsole.commands.category"
-            id="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile"            
-            name="%command.profile">
-      </command>
-      <command
-            categoryId="tr.org.liderahenk.liderconsole.commands.category"
             id="tr.org.liderahenk.liderconsole.commands.ScreenshotTask"            
             name="%command.task">
       </command>
@@ -23,29 +18,6 @@
    <extension
        point="org.eclipse.ui.handlers">
 
-		<!-- Profile handler -->
-       	<handler
-            class="tr.org.liderahenk.screenshot.handlers.ScreenshotProfileHandler"
-            commandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile">
-           <!-- TODO Uncomment this after updating/fixing LiderSourceProvider -->
-		   <!-- <enabledWhen>
-				<and>
-		          <with
-		                variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.available">
-		             <equals
-		                   value="true">
-		             </equals>
-		          </with>
-				<with
-	                variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isAhenkSelected">
-	             	<equals
-		                   value="true">
-		            </equals>
-	          	</with>
-		       </and>
-		    </enabledWhen> -->        
-      	</handler>
-      	
       	<!-- Task handler -->
        <handler
             class="tr.org.liderahenk.screenshot.handlers.ScreenshotTaskHandler"
@@ -74,45 +46,6 @@
   <extension
          point="org.eclipse.ui.menus">
 
-		<!-- Add menu command for "profile definition" dialog -->
-		<menuContribution
-      		allPopups="false"
-            locationURI="menu:tr.org.liderahenk.liderconsole.menus.ProfileDefinition?after=additions">
- 				<command
-                  commandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile"
-                  id="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile"
-                  icon="icons/sample.png"
-                  tooltip="%command.profile">
-                  <!-- TODO Uncomment this after updating/fixing LiderSourceProvider -->
-				  <!-- <visibleWhen>
-					   <and>
-			                <iterate operator="or">		
-			                	<or>
-							  	<with
-					                variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isSearchSelected">
-						             <equals
-						                   value="true">
-						             </equals>
-					          	</with>
-					          	<with
-					                variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isEntrySelected">
-						             <equals
-						                   value="true">
-						             </equals>
-					          	</with>
-					        	</or>
-					        </iterate>
-							<with
-				                variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isAhenkSelected">
-				             	<equals
-					                   value="true">
-					            </equals>
-				          	</with>
-					    </and>
-					</visibleWhen> -->               
-           		</command>
-		</menuContribution>
-      
       	<!-- Add extension point contribution for "task execution" dialogs -->
 		<menuContribution
       		allPopups="false"
@@ -151,11 +84,5 @@
            		</command>
 		</menuContribution>
   </extension>
-  
-	<!-- Add extension point contribution for "policy execution" dialogs -->
-	<extension
-  		point="tr.org.liderahenk.liderconsole.core.policymenu">
-  		<policyItem label="%command.profile" pluginName="screenshot" pluginVersion="1.0.0" profileCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotProfile" />
-  	</extension>
   	
 </plugin>
