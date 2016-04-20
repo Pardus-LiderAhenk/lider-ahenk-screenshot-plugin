@@ -42,7 +42,6 @@
 
 	<modules>
 		<module>lider-screenshot</module>
-		<module>lider-screenshot-db</module>
 		<module>lider-screenshot-feature</module>
 		<module>lider-console-screenshot</module>
 		<module>ahenk-screenshot</module>
