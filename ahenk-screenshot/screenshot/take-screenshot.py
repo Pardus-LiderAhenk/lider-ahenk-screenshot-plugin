@@ -4,8 +4,8 @@
 
 
 import datetime
-from base.model.ContentType import ContentType
-from base.model.MessageCode import MessageCode
+from base.model.enum.ContentType import ContentType
+from base.model.enum.MessageCode import MessageCode
 from base.plugin.AbstractCommand import AbstractCommand
 
 
