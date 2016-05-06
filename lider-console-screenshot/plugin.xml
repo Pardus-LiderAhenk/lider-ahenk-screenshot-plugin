@@ -51,9 +51,10 @@
       		allPopups="false"
             locationURI="popup:tr.org.liderahenk.liderconsole.menus.ApplyTask?after=additions">
  				<command
-                  commandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask"
-                  id="tr.org.liderahenk.liderconsole.commands.ScreenshotTask"
-                  tooltip="%command.task">
+           commandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask"
+           icon="icons/16/desktop-image-screenshot.png"
+           id="tr.org.liderahenk.liderconsole.commands.ScreenshotTask"
+           tooltip="%command.task">
                   <!-- TODO Uncomment this after updating/fixing LiderSourceProvider -->
 				  <!-- <visibleWhen>
 					   <and>
