@@ -29,6 +29,7 @@
     </feature>
 
     <feature name="lider-screenshot-bundles" version="${project.version}">
+    	<configfile finalname="/etc/tr.org.liderahenk.screenshot.cfg">mvn:${groupId}/lider-screenshot/${project.version}/cfg</configfile>
 		<bundle>mvn:tr.org.liderahenk/lider-screenshot/${project.version}</bundle>
     </feature>
 
