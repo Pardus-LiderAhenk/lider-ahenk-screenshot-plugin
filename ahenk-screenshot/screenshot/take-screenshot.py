@@ -4,51 +4,44 @@
 
 
 import datetime
+
 from base.model.enum.ContentType import ContentType
-from base.model.enum.MessageCode import MessageCode
-from base.plugin.AbstractCommand import AbstractCommand
+from base.plugin.abstract_plugin import AbstractPlugin
 
 
-class TakeScreenshot(AbstractCommand):
+class TakeScreenshot(AbstractPlugin):
     def __init__(self, task, context):
         super(TakeScreenshot, self).__init__()
         self.task = task
         self.context = context
-        self.shot_path = self.get_shot_path()
+        self.logger = self.get_logger()
+        self.message_code = self.get_message_code()
 
+        self.shot_path = '/tmp/ahenk_screenshot_' + str(datetime.datetime.now().strftime("%d%m%Y%I%M")) + '.jpg'
         self.take_screenshot = '/bin/bash ./plugins/screenshot/scripts/screenshot.sh ' + self.shot_path
 
     def handle_task(self):
-
-        process = self.context.execute(self.take_screenshot)
-        process.wait()
-
-        md5sum = self.scope.getExecutionManager().get_md5_file(str(self.shot_path))
-        print('md5:' + md5sum)
-
         try:
+            self.execute(self.take_screenshot)
+
             self.scope.getMessager().send_file(self.shot_path)
+
+            data = {}
+            md5sum = self.get_md5_file(str(self.shot_path))
+            data['md5'] = md5sum
+            print('md5: ' + md5sum)
+
+            self.context.create_response(code=self.message_code.TASK_PROCESSED.value,
+                                         message='User screenshot task processed successfully',
+                                         data=data, content_type=ContentType.APPLICATION_JSON.value)
+            self.logger.info('[SCREENSHOT] SCREENSHOT task is handled successfully')
+
         except Exception as e:
-            print('--->' + str(e))
-
-        data = {'md5': md5sum}
-
-        self.create_response(message='_message', data=data, content_type=ContentType.IMAGE_JPEG.value)
-
-    def get_shot_path(self):
-        return '/tmp/ahenk_screenshot_' + str(datetime.datetime.now().strftime("%d%m%Y%I%M")) + '.jpg'
-
-    def create_response(self, success=True, message=None, data=None, content_type=None):
-        if success:
-            self.context.put('responseCode', MessageCode.TASK_PROCESSED.value)
-        else:
-            self.context.put('responseCode', MessageCode.TASK_ERROR.value)
-        self.context.put('responseMessage', message)
-        self.context.put('responseData', data)
-        self.context.put('contentType', content_type)
+            self.logger.error('[SCREENSHOT] A problem occured while handling SCREENSHOT task: {0}'.format(str(e)))
+            self.context.create_response(code=self.message_code.TASK_ERROR.value,
+                                         message='A problem occured while handling SCREENSHOT task: {0}'.format(str(e)))
 
 
 def handle_task(task, context):
-    print('TAKE SHOT')
     screenshot = TakeScreenshot(task, context)
     screenshot.handle_task()

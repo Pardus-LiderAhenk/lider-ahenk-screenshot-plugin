@@ -26,7 +26,7 @@ public class TakeScreenshotCommand implements ICommand {
 
 	@Override
 	public ICommandResult validate(ICommandContext context) {
-		return resultFactory.create(CommandResultStatus.OK, null, this);
+		return resultFactory.create(CommandResultStatus.OK, null, this, null);
 	}
 
 	@Override

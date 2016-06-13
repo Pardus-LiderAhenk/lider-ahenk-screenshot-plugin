@@ -58,8 +58,10 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
 								new TypeReference<HashMap<String, Object>>() {
 						});
-
-						Image screenshot = (Image) responseData.get("screenshot");
+						
+						if(responseData != null) {
+							String md5 = (String) responseData.get("md5");
+						}
 						
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
