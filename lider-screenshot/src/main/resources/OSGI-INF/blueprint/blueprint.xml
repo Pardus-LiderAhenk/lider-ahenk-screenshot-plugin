@@ -15,6 +15,7 @@
   	<service ref="TakeScreenshotCommand" interface="tr.org.liderahenk.lider.core.api.plugin.ICommand" />
   	<bean id="TakeScreenshotCommand" 
         class="tr.org.liderahenk.screenshot.commands.TakeScreenshotCommand">
+        <property name="pluginInfo" ref="pluginInfoImpl" />
         <property name="resultFactory" ref="resultFactory"/>
   	</bean>
   

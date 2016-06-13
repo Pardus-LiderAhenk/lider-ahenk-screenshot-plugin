@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
+import tr.org.liderahenk.liderconsole.core.exceptions.ValidationException;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.xmpp.notifications.TaskStatusNotification;
 import tr.org.liderahenk.screenshot.constants.ScreenshotConstants;
@@ -59,6 +60,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 						});
 
 						Image screenshot = (Image) responseData.get("screenshot");
+						
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 						Notifier.error("", Messages.getString("UNEXPECTED_ERROR_TAKING_SCREENSHOT"));
@@ -93,8 +95,8 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	}
 
 	@Override
-	public boolean validateBeforeExecution() {
-		return true;
+	public void validateBeforeExecution() throws ValidationException {
+		
 	}
 
 	@Override
@@ -116,5 +118,4 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	public String getPluginVersion() {
 		return ScreenshotConstants.PLUGIN_VERSION;
 	}
-
 }
