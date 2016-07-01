@@ -16,6 +16,6 @@ w -oush | grep tty | awk '{print $1, $3}' | while read x; do
 	array=(${x//:/ })
 	if [ $display -eq ${array[1]} ]; then
 		echo "Screenshot username:${array[0]} display:${array[1]}"
-		su - ${array[0]} -c "xwd -root -display :${array[1]} | convert -resize 30% - jpg:- > $1"
+		su - ${array[0]} -c "xwd -root -display :${array[1]} | convert  - jpg:- > $1"
 	fi
 done
