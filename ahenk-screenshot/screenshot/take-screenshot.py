@@ -17,7 +17,7 @@ class TakeScreenshot(AbstractPlugin):
 
         self.temp_file_name = str(self.generate_uuid())
         self.shot_path = '{0}{1}'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
-        self.take_screenshot = '/bin/bash ./plugins/screenshot/scripts/screenshot.sh ' + self.shot_path
+        self.take_screenshot = '/bin/bash {0}screenshot/scripts/screenshot.sh {1}'.format(self.Ahenk.plugins_path(), self.shot_path)
 
         self.logger.debug('[SCREENSHOT] Instance initialized.')
 
@@ -37,7 +37,6 @@ class TakeScreenshot(AbstractPlugin):
                 self.logger.debug('[SCREENSHOT] Renamed.')
                 data['md5'] = md5sum
                 json_data = json.dumps(data)
-                print(json_data)
                 self.context.create_response(code=self.message_code.TASK_PROCESSED.value,
                                              message='User screenshot task processed successfully',
                                              data=json_data, content_type=self.get_content_type().IMAGE_JPEG.value)
