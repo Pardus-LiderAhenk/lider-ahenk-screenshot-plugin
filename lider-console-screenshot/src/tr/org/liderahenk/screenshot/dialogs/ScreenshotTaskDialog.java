@@ -1,7 +1,6 @@
 package tr.org.liderahenk.screenshot.dialogs;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -10,12 +9,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.e4.core.services.events.IEventBroker;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -37,53 +33,9 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScreenshotTaskDialog.class);
 
-	private IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
-
 	public ScreenshotTaskDialog(Shell parentShell, String dn) {
 		super(parentShell, dn);
-		eventBroker.subscribe(getPluginName().toUpperCase(Locale.ENGLISH), eventHandler);
-	}
-
-	private EventHandler eventHandler = new EventHandler() {
-		@Override
-		public void handleEvent(final Event event) {
-			Job job = new Job("TASK") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					monitor.beginTask("SCREENSHOT", 100);
-					try {
-						TaskStatusNotification taskStatus = (TaskStatusNotification) event
-								.getProperty("org.eclipse.e4.data");
-						byte[] data = taskStatus.getResult().getResponseData();
-						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
-								new TypeReference<HashMap<String, Object>>() {
-						});
-						
-						if(responseData != null) {
-							String md5 = (String) responseData.get("md5");
-						}
-						
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						Notifier.error("", Messages.getString("UNEXPECTED_ERROR_TAKING_SCREENSHOT"));
-					}
-
-					monitor.worked(100);
-					monitor.done();
-
-					return Status.OK_STATUS;
-				}
-			};
-
-			job.setUser(true);
-			job.schedule();
-		}
-	};
-
-	@Override
-	public boolean close() {
-		eventBroker.unsubscribe(eventHandler);
-		return super.close();
+		subscribeEventHandler(taskStatusNotificationHandler);
 	}
 
 	@Override
@@ -98,7 +50,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	@Override
 	public void validateBeforeExecution() throws ValidationException {
-		
+
 	}
 
 	@Override
@@ -120,4 +72,41 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	public String getPluginVersion() {
 		return ScreenshotConstants.PLUGIN_VERSION;
 	}
+
+	private EventHandler taskStatusNotificationHandler = new EventHandler() {
+		@Override
+		public void handleEvent(final Event event) {
+			Job job = new Job("TASK") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					monitor.beginTask("SCREENSHOT", 100);
+					try {
+						TaskStatusNotification taskStatus = (TaskStatusNotification) event
+								.getProperty("org.eclipse.e4.data");
+						byte[] data = taskStatus.getResult().getResponseData();
+						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
+								new TypeReference<HashMap<String, Object>>() {
+								});
+
+						if (responseData != null) {
+							String md5 = (String) responseData.get("md5");
+						}
+
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						Notifier.error("", Messages.getString("UNEXPECTED_ERROR_TAKING_SCREENSHOT"));
+					}
+
+					monitor.worked(100);
+					monitor.done();
+
+					return Status.OK_STATUS;
+				}
+			};
+
+			job.setUser(true);
+			job.schedule();
+		}
+	};
+
 }

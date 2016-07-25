@@ -12,12 +12,12 @@ import tr.org.liderahenk.screenshot.dialogs.ScreenshotTaskDialog;
  *
  */
 public class ScreenshotTaskHandler extends SingleSelectionHandler {
-	
+
 	@Override
 	public void executeWithDn(String dn) {
 		ScreenshotTaskDialog dialog = new ScreenshotTaskDialog(Display.getDefault().getActiveShell(), dn);
 		dialog.create();
-		dialog.open();
+		dialog.openWithEventBroker();
 	}
-	
+
 }
