@@ -38,7 +38,7 @@ class TakeScreenshot(AbstractPlugin):
                 data['md5'] = md5sum
                 json_data = json.dumps(data)
                 self.context.create_response(code=self.message_code.TASK_PROCESSED.value,
-                                             message='User screenshot task processed successfully',
+                                             message='Screenshot görevi başarıyla çalıştırıldı.',
                                              data=json_data, content_type=self.get_content_type().IMAGE_JPEG.value)
                 self.logger.debug('[SCREENSHOT] SCREENSHOT task is handled successfully')
             else:
@@ -47,7 +47,7 @@ class TakeScreenshot(AbstractPlugin):
         except Exception as e:
             self.logger.error('[SCREENSHOT] A problem occured while handling SCREENSHOT task: {0}'.format(str(e)))
             self.context.create_response(code=self.message_code.TASK_ERROR.value,
-                                         message='A problem occured while handling SCREENSHOT task: {0}'.format(str(e)))
+                                         message='Screenshot görevi çalıştırılırken bir hata oluştu.')
 
 
 def handle_task(task, context):
