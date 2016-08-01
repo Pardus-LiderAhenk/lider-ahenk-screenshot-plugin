@@ -12,12 +12,20 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -29,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
 import tr.org.liderahenk.liderconsole.core.exceptions.ValidationException;
 import tr.org.liderahenk.liderconsole.core.rest.utils.AgentRestUtils;
+import tr.org.liderahenk.liderconsole.core.rest.utils.TaskRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.SWTResourceManager;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.xmpp.enums.ContentType;
@@ -47,6 +56,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	private static final Logger logger = LoggerFactory.getLogger(ScreenshotTaskDialog.class);
 
+	private ScrolledComposite sc;
 	private List<OnlineUsersCombo> comboList;
 
 	public ScreenshotTaskDialog(Shell parentShell, Set<String> dnSet) {
@@ -62,7 +72,11 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 	@Override
 	public Control createTaskDialogArea(Composite parent) {
 
-		Composite mainComposite = new Composite(parent, SWT.NONE);
+		sc = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
+		sc.setLayout(new GridLayout(1, false));
+		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		Composite mainComposite = new Composite(sc, SWT.NONE);
 		mainComposite.setLayout(new GridLayout(1, false));
 		mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -101,7 +115,13 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 			}
 		}
 
-		return mainComposite;
+		sc.setContent(mainComposite);
+		mainComposite.setSize(mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setExpandVertical(true);
+		sc.setExpandHorizontal(true);
+		sc.setMinSize(new Point(600, 400));
+
+		return null;
 	}
 
 	@Override
@@ -151,22 +171,67 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 							Display.getDefault().asyncExec(new Runnable() {
 								@Override
 								public void run() {
-									// Agent DN
-									String dn = taskStatus.getCommandExecution().getDn();
-									for (OnlineUsersCombo cmbOnlineUsers : comboList) {
-										// Find correct line to display the
-										// image
-										if (dn.equalsIgnoreCase(cmbOnlineUsers.getDn())) {
-											// Draw image!
-											byte[] responseData = taskStatus.getResult().getResponseData();
-											Label lblImage = new Label(cmbOnlineUsers.getParent(), SWT.BORDER);
-											lblImage.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-											lblImage.setImage(createImage(responseData));
-											// TODO download button!
-											new Label(cmbOnlineUsers.getParent(), SWT.NONE);
-											cmbOnlineUsers.getParent().layout(true);
-											break;
+									try {
+										// Agent DN
+										final String dn = taskStatus.getCommandExecution().getDn();
+										final ContentType contentType = taskStatus.getResult().getContentType();
+										final byte[] data = TaskRestUtils
+												.getResponseData(taskStatus.getResult().getId());
+
+										for (OnlineUsersCombo cmbOnlineUsers : comboList) {
+
+											// Find correct line to display the
+											// image
+											if (dn.equalsIgnoreCase(cmbOnlineUsers.getDn())) {
+
+												// Draw image!
+												Label lblImage = new Label(cmbOnlineUsers.getParent(), SWT.BORDER);
+												lblImage.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+												lblImage.setImage(createImage(data));
+
+												// File button to download image
+												final DirectoryDialog dialog = new DirectoryDialog(
+														cmbOnlineUsers.getParent().getShell(), SWT.OPEN);
+												dialog.setMessage(Messages.getString("SELECT_DOWNLOAD_DIR"));
+												Button btnDirSelect = new Button(cmbOnlineUsers.getParent(), SWT.PUSH);
+												btnDirSelect.setText(Messages.getString("DOWNLOAD_FILE"));
+												btnDirSelect.setImage(new Image(cmbOnlineUsers.getParent().getDisplay(),
+														this.getClass().getResourceAsStream("/icons/16/download.png")));
+												btnDirSelect.addSelectionListener(new SelectionListener() {
+													@Override
+													public void widgetSelected(SelectionEvent e) {
+														String path = dialog.open();
+														if (path == null || path.isEmpty()) {
+															return;
+														}
+														if (!path.endsWith("/")) {
+															path += "/";
+														}
+														// Save image
+														ImageLoader loader = new ImageLoader();
+														loader.data = new ImageData[] {
+																new ImageData(new ByteArrayInputStream(data)) };
+														loader.save(
+																path + "sc-222."
+																		+ ContentType.getFileExtension(contentType),
+																ContentType.getSWTConstant(contentType));
+													}
+
+													@Override
+													public void widgetDefaultSelected(SelectionEvent e) {
+													}
+												});
+
+												// Refresh dialog
+												cmbOnlineUsers.getParent().layout(true);
+												sc.layout(true);
+												sc.setMinSize(sc.getContent().computeSize(600, SWT.DEFAULT));
+
+												break;
+											}
 										}
+									} catch (Exception e1) {
+										e1.printStackTrace();
 									}
 								}
 							});
