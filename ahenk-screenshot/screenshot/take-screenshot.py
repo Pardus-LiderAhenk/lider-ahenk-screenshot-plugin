@@ -30,6 +30,8 @@ class TakeScreenshot(AbstractPlugin):
                 self.execute(self.take_screenshot)
             else:
                 user_display = self.Sessions.display(user_name)
+                if not user_display:
+                    user_display = '0'
                 self.logger.debug('[SCREENSHOT] Taking screenshot with specified display: {0}'.format(user_display))
                 self.execute(self.take_screenshot + ' ' + user_display.replace(':', ''))
             self.logger.debug('[SCREENSHOT] Screenshot command executed.')

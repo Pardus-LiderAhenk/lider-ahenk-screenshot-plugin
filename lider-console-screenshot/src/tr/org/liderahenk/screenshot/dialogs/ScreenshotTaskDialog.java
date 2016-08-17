@@ -2,6 +2,7 @@ package tr.org.liderahenk.screenshot.dialogs;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,7 +213,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 														loader.data = new ImageData[] {
 																new ImageData(new ByteArrayInputStream(data)) };
 														loader.save(
-																path + "sc-222."
+																path + "sc" + new Date().getTime() + "."
 																		+ ContentType.getFileExtension(contentType),
 																ContentType.getSWTConstant(contentType));
 													}
