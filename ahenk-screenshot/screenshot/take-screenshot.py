@@ -19,11 +19,15 @@ class TakeScreenshot(AbstractPlugin):
 
         self.temp_file_name = str(self.generate_uuid())
         self.shot_path = '{0}{1}'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
-        self.take_screenshot = '/bin/bash {0}screenshot/scripts/screenshot.sh {1}'.format(self.Ahenk.plugins_path(), self.shot_path)
+        self.take_screenshot = '/bin/bash {0}screenshot/scripts/screenshot.sh {1}'.format(self.Ahenk.plugins_path(),
+                                                                                          self.shot_path)
 
     def handle_task(self):
         try:
-            user_name = self.data[self.Ahenk.dn()]
+            user_name = None
+
+            if self.has_attr_json(self.data, self.Ahenk.dn()) and self.data[self.Ahenk.dn()] is not None:
+                user_name = self.data[self.Ahenk.dn()]
 
             if not user_name:
                 self.logger.debug('[SCREENSHOT] Taking screenshot with default display.')
@@ -42,18 +46,20 @@ class TakeScreenshot(AbstractPlugin):
                 data = {}
                 md5sum = self.get_md5_file(str(self.shot_path))
                 self.logger.debug('[SCREENSHOT] {0} renaming to {1}'.format(self.temp_file_name, md5sum))
-                self.rename_file(self.shot_path, self.Ahenk.received_dir_path() + '/' + md5sum)
+                self.rename_file(self.shot_path, self.Ahenk.received_dir_path() + md5sum)
                 self.logger.debug('[SCREENSHOT] Renamed.')
                 data['md5'] = md5sum
                 self.context.create_response(code=self.message_code.TASK_PROCESSED.value,
-                                             message='User screenshot task processed successfully',
-                                             data=json.dumps(data), content_type=self.get_content_type().IMAGE_JPEG.value)
+                                             message='Ekran görüntüsü başarıyla alındı.',
+                                             data=json.dumps(data),
+                                             content_type=self.get_content_type().IMAGE_JPEG.value)
                 self.logger.debug('[SCREENSHOT] SCREENSHOT task is handled successfully')
             else:
                 raise Exception('Image not found this path: {}'.format(self.shot_path))
 
         except Exception as e:
-            self.logger.error('[SCREENSHOT] A problem occured while handling SCREENSHOT task: {0}'.format(traceback.format_exc()))
+            self.logger.error(
+                '[SCREENSHOT] A problem occured while handling SCREENSHOT task: {0}'.format(traceback.format_exc()))
             self.context.create_response(code=self.message_code.TASK_ERROR.value,
                                          message='Ekran görüntüsü alırken hata oluştu: {0}'.format(str(e)))
 
