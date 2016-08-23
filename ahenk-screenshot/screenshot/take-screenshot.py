@@ -32,13 +32,37 @@ class TakeScreenshot(AbstractPlugin):
             if not user_name:
                 self.logger.debug('[SCREENSHOT] Taking screenshot with default display.')
                 self.execute(self.take_screenshot)
+
             else:
                 user_display = self.Sessions.display(user_name)
                 if not user_display:
                     user_display = '0'
-                self.logger.debug('[SCREENSHOT] Taking screenshot with specified display: {0}'.format(user_display))
-                self.execute(self.take_screenshot + ' ' + user_display.replace(':', ''))
-            self.logger.debug('[SCREENSHOT] Screenshot command executed.')
+
+                ##permission
+                self.logger.error(
+                    '[SCREENSHOT] Asking for screenshot to user {0} on {1} display'.format(user_name, user_display))
+
+                user_answer = self.ask_permission(user_display, user_name,
+                                                  "Ekran görüntüsünün alınmasına izin veriyor musunuz?",
+                                                  "Ekran Görüntüsü")
+
+                if user_answer is None:
+                    self.logger.error('[SCREENSHOT] User answer could not keep.')
+                    self.context.create_response(code=self.message_code.TASK_ERROR.value,
+                                                 message='Ekran görüntüsü alırken hata oluştu: Kullanıcı iznine erişilemedi.')
+                    return
+
+                elif user_answer is True:
+                    self.logger.debug('[SCREENSHOT] User accepted for screenshot')
+                    self.logger.debug('[SCREENSHOT] Taking screenshot with specified display: {0}'.format(user_display))
+                    self.execute(self.take_screenshot + ' ' + user_display.replace(':', ''))
+                    self.logger.debug('[SCREENSHOT] Screenshot command executed.')
+                else:
+                    self.logger.warning('[SCREENSHOT] User decline to screenshot.')
+                    self.context.create_response(code=self.message_code.TASK_WARNING.value,
+                                                 message='Eklenti başatıyla çalıştı fakat; kullanıcı ekran görüntüsü alınmasına izin vermedi.')
+                    return
+                ##permission###
 
             if self.is_exist(self.shot_path):
                 self.logger.debug('[SCREENSHOT] Screenshot file found.')
