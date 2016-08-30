@@ -60,7 +60,7 @@ class TakeScreenshot(AbstractPlugin):
                 else:
                     self.logger.warning('[SCREENSHOT] User decline to screenshot.')
                     self.context.create_response(code=self.message_code.TASK_WARNING.value,
-                                                 message='Eklenti başatıyla çalıştı fakat; kullanıcı ekran görüntüsü alınmasına izin vermedi.')
+                                                 message='Eklenti başarıyla çalıştı fakat; kullanıcı ekran görüntüsü alınmasına izin vermedi.')
                     return
                 ##permission###
 
