@@ -80,5 +80,12 @@
 		</command>
 	</menuContribution>
   </extension>
+  
+	<!-- Add extension point contribution for i18n messages -->
+	<extension
+  		point="tr.org.liderahenk.liderconsole.core.i18n">
+  		<task code="take-screenshot" label="%command.task" />
+		<plugin name="screenshot" label="%plugin.label" />
+  	</extension>
   	
 </plugin>
