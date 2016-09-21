@@ -39,7 +39,7 @@ class TakeScreenshot(AbstractPlugin):
                     user_display = '0'
 
                 ##permission
-                self.logger.error(
+                self.logger.debug(
                     '[SCREENSHOT] Asking for screenshot to user {0} on {1} display'.format(user_name, user_display))
 
                 user_answer = self.ask_permission(user_display, user_name,
