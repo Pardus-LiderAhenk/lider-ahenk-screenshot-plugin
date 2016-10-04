@@ -11,7 +11,7 @@ fi
 if ! which convert > /dev/null; then
 	apt-get install -y imagemagick
 fi
-w -oush | awk '{print $1, $2}' | while read x; do
+w -oush | awk '{print $1, $3}' | while read x; do
 	array=(${x//:/ })
 	if [ "$display" = "${array[1]}" ]; then
 		echo "Taking screenshot of user:${array[0]} display:${array[1]}"
