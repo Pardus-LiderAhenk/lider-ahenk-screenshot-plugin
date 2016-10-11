@@ -36,15 +36,39 @@ class TakeScreenshot(AbstractPlugin):
                     self.context.create_response(code=self.message_code.TASK_ERROR.value,
                                                  message='Ekran görüntüsü alırken hata oluştu: Varsayılan display\'e erişilemedi.')
                     return
-                self.logger.debug(
-                    'Executing take screenshot command with user: {0} and display: {1}'.format(arr[0], arr[1]))
-                self.logger.debug(str(self.take_screenshot.format(arr[1])))
-                result_code, p_out, p_err = self.execute(self.take_screenshot.format(arr[1]), as_user=arr[0])
 
-                if result_code != 0:
-                    self.logger.error('A problem occurred while running take screenshot command with default display')
+                ##permission
+                self.logger.debug(
+                    'Asking for screenshot to user {0} on {1} display'.format(arr[0], arr[1]))
+
+                user_answer = self.ask_permission(arr[1], arr[0],
+                                                  "Ekran görüntüsünün alınmasına izin veriyor musunuz?",
+                                                  "Ekran Görüntüsü")
+
+                if user_answer is None:
+                    self.logger.error('User answer could not kept.')
                     self.context.create_response(code=self.message_code.TASK_ERROR.value,
-                                                 message='Ekran görüntüsü alırken hata oluştu: Komut başarıyla çalıştırılamadı.')
+                                                 message='Ekran görüntüsü alırken hata oluştu: Kullanıcı iznine erişilemedi.')
+                    return
+                elif user_answer is True:
+                    self.logger.debug('User accepted for screenshot')
+                    self.logger.debug('Taking screenshot with specified display: {0}'.format(arr[1]))
+                    self.logger.debug(
+                        'Executing take screenshot command with user: {0} and display: {1}'.format(arr[0], arr[1]))
+                    self.logger.debug(str(self.take_screenshot.format(arr[1])))
+                    result_code, p_out, p_err = self.execute(self.take_screenshot.format(arr[1]), as_user=arr[0])
+
+                    if result_code != 0:
+                        self.logger.error(
+                            'A problem occurred while running take screenshot command with default display')
+                        self.context.create_response(code=self.message_code.TASK_ERROR.value,
+                                                     message='Ekran görüntüsü alırken hata oluştu: Komut başarıyla çalıştırılamadı.')
+                        return
+
+                else:
+                    self.logger.warning('User decline to take screenshot.')
+                    self.context.create_response(code=self.message_code.TASK_WARNING.value,
+                                                 message='Eklenti başarıyla çalıştı; fakat kullanıcı ekran görüntüsü alınmasına izin vermedi.')
                     return
 
             else:
