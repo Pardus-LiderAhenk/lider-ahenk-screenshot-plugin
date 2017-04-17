@@ -88,4 +88,10 @@
 		<plugin name="screenshot" label="%plugin.label" />
   	</extension>
   	
+  	
+  	 <extension
+  		point="tr.org.liderahenk.liderconsole.core.taskmenu">
+  		<taskItem label="%command.task" pluginName="screenshot" pluginVersion="1.0.0" taskCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask" />
+  	</extension>
+  	
 </plugin>
