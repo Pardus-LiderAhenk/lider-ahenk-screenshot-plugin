@@ -88,10 +88,14 @@
 		<plugin name="screenshot" label="%plugin.label" />
   	</extension>
   	
-  	
+  	<!-- Add extension point contribution for "task execution" dialogs -->
   	 <extension
   		point="tr.org.liderahenk.liderconsole.core.taskmenu">
-  		<taskItem label="%command.task" pluginName="screenshot" pluginVersion="1.0.0" taskCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask" selectionType="multi" description="Herhangi bir ahenk makinesinden/lerinden ekran görüntüsü almayı sağlayan eklentidir.&#xA;Ekran görüntüsü almak için tıklayınız.." />
+  		<taskItem label="%command.task" pluginName="screenshot" 
+  		pluginVersion="1.0.0" 
+  		taskCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask" selectionType="multi" 
+  		description="Herhangi bir ahenk makinesinden/lerinden ekran görüntüsü almayı sağlayan eklentidir.&#xA;Ekran görüntüsü almak için tıklayınız.." 
+  		imagePath="desktop-image-screenshot.png"/>
   	</extension>
   	
 </plugin>
