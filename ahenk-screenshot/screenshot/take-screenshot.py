@@ -94,7 +94,10 @@ class TakeScreenshot(AbstractPlugin):
                     self.logger.debug('User accepted for screenshot')
                     self.logger.debug('Taking screenshot with specified display: {0}'.format(user_display))
 
-                    self.execute(self.take_screenshot.format(user_display.replace(':', '')), as_user=user_name)
+                    if self.Ahenk.ip():
+                        self.execute(self.take_screenshot.format(user_display.replace(':', '')), ip=self.Ahenk.ip())
+                    else:
+                        self.execute(self.take_screenshot.format(user_display.replace(':', '')), as_user=user_name)
 
                     self.logger.debug('Screenshot command executed.')
                 else:
