@@ -5,7 +5,7 @@
 
 
 from base.plugin.abstract_plugin import AbstractPlugin
-import json
+import json, os
 import traceback
 
 
@@ -19,10 +19,17 @@ class TakeScreenshot(AbstractPlugin):
 
         self.temp_file_name = str(self.generate_uuid())
         self.shot_path = '{0}{1}'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
-        self.take_screenshot = 'xwd -root -display :{0} | convert  - jpg:- > ' + self.shot_path
+        #self.take_screenshot = 'xwd -root -display :{0} | convert  - jpg:- > ' + self.shot_path
+        self.take_screenshot = 'su {0} -c " export DISPLAY={1} && scrot ' + self.shot_path + ' "'
 
     def handle_task(self):
         try:
+            
+            try:
+                os.remove(self.shot_path)
+            except Exception:
+                pass
+            
             user_name = None
 
             if self.has_attr_json(self.data, self.Ahenk.dn()) and self.data[self.Ahenk.dn()] is not None:
@@ -94,10 +101,10 @@ class TakeScreenshot(AbstractPlugin):
                     self.logger.debug('User accepted for screenshot')
                     self.logger.debug('Taking screenshot with specified display: {0}'.format(user_display))
 
-                    if self.Ahenk.ip():
-                        self.execute(self.take_screenshot.format(user_display.replace(':', '')), ip=self.Ahenk.ip())
+                    if self.Sessions.userip(user_name):
+                        self.execute(self.take_screenshot.format(user_name, user_display.replace(':', '')), ip=self.Sessions.userip(user_name))
                     else:
-                        self.execute(self.take_screenshot.format(user_display.replace(':', '')), as_user=user_name)
+                        self.execute(self.take_screenshot.format(user_name, user_display.replace(':', '')), as_user=user_name)
 
                     self.logger.debug('Screenshot command executed.')
                 else:

@@ -9,6 +9,6 @@ Homepage: http://www.liderahenk.org.tr
 Package: ahenk-screenshot
 Version: 1.0.0
 Architecture: any
-Depends: python3 (>= 3), x11-apps, imagemagick
+Depends: python3 (>= 3), x11-apps, imagemagick, scrot
 Description: Lider Ahenk screenshot plugin
 
