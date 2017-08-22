@@ -18,7 +18,7 @@ class TakeScreenshot(AbstractPlugin):
         self.message_code = self.get_message_code()
 
         self.temp_file_name = str(self.generate_uuid())
-        self.shot_path = '{0}{1}'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
+        self.shot_path = '{0}{1}.png'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
         #self.take_screenshot = 'xwd -root -display :{0} | convert  - jpg:- > ' + self.shot_path
         self.take_screenshot = 'su {0} -c " export DISPLAY={1} && scrot ' + self.shot_path + ' "'
         
@@ -103,7 +103,7 @@ class TakeScreenshot(AbstractPlugin):
                     self.logger.debug('Taking screenshot with specified display: {0}'.format(user_display))
 
                     if self.Sessions.userip(user_name):
-                        self.execute(self.take_screenshot.format(user_name, user_display.replace(':', '')), ip=self.Sessions.userip(user_name))
+                        self.execute(self.take_screenshot.format(user_name, user_display), ip=self.Sessions.userip(user_name))
                         self.scopy_from_remote(self.shot_path, self.shot_path,ip=self.Sessions.userip(user_name))
                     else:
                         self.execute(self.take_screenshot.format(user_name, user_display.replace(':', '')), as_user=user_name)
