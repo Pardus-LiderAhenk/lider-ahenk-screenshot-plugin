@@ -46,6 +46,8 @@ import tr.org.liderahenk.liderconsole.core.xmpp.notifications.TaskStatusNotifica
 import tr.org.liderahenk.screenshot.constants.ScreenshotConstants;
 import tr.org.liderahenk.screenshot.i18n.Messages;
 import tr.org.liderahenk.screenshot.widgets.OnlineUsersCombo;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.SelectionAdapter;
 
 /**
  * 
@@ -59,6 +61,9 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 
 	private ScrolledComposite sc;
 	private List<OnlineUsersCombo> comboList;
+	List<String> onlineUsers = null;
+
+	private OnlineUsersCombo cmbOnlineUsers;
 
 	public ScreenshotTaskDialog(Shell parentShell, Set<String> dnSet) {
 		super(parentShell, dnSet);
@@ -93,20 +98,54 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 			Composite innerComposite = new Composite(mainComposite, SWT.NONE);
 			innerComposite.setLayout(new GridLayout(2, false));
 			innerComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			
+			Composite composite = new Composite(innerComposite, SWT.NONE);
+			composite.setLayout(new GridLayout(2, false));
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+			
+			textSearch = new Text(composite, SWT.BORDER);
+			textSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			
+			Button btnNewButton = new Button(composite, SWT.NONE);
+			btnNewButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					
+					String srcText=textSearch.getText();
+					
+					if(srcText.equals("")) return;
+					
+					if(onlineUsers!=null){
+						int searchIndex=-1;
+						
+						for (int i = 0; i < onlineUsers.size(); i++) {
+							String user=onlineUsers.get(i);
+							
+							if(user.contains(srcText)){
+								searchIndex=i;
+							}
+						}
+						
+						cmbOnlineUsers.select(searchIndex);
+						
+					}
+				}
+			});
+			btnNewButton.setText(Messages.getString("search")); //$NON-NLS-1$
 
 			// Online users
 			Label lblOnlineUsers = new Label(innerComposite, SWT.NONE);
 			lblOnlineUsers.setText(Messages.getString("ONLINE_USERS"));
 
 			// Find online users of agent specified by current DN
-			List<String> onlineUsers = null;
+			
 			try {
 				onlineUsers = AgentRestUtils.getOnlineUsers(dn);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 
-			OnlineUsersCombo cmbOnlineUsers = new OnlineUsersCombo(innerComposite,
+			cmbOnlineUsers = new OnlineUsersCombo(innerComposite,
 					SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY, dn);
 			cmbOnlineUsers.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			comboList.add(cmbOnlineUsers);
@@ -122,7 +161,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 		sc.setExpandHorizontal(true);
 		sc.setMinSize(new Point(600, 400));
 
-		return null;
+		return sc;
 	}
 
 	@Override
@@ -253,6 +292,7 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 			job.schedule();
 		}
 	};
+	private Text textSearch;
 
 	/**
 	 * Create image from given response data, resize if necessary.
@@ -273,5 +313,4 @@ public class ScreenshotTaskDialog extends DefaultTaskDialog {
 		image.dispose();
 		return scaled;
 	}
-
 }
