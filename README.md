@@ -33,7 +33,7 @@ Screenshot plugin for [Lider Ahenk project](http://www.liderahenk.org.tr).
 
 #### Ahenk
 
-1. Create a soft link for _ahenk-screenshot/screenshot_ directory via `sudo ln -s lider-ahenk-screenshot-plugin/ahenk-screenshot/screenshot/ /opt/ahenk/plugins`
+1. Create a soft link for _ahenk-screenshot/screenshot_ directory via `sudo ln -s lider-ahenk-screenshot-plugin/ahenk-screenshot/screenshot/ /usr/share/ahenk/plugins`
 
 ## Contribution
 
