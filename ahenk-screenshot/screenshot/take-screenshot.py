@@ -19,7 +19,8 @@ class TakeScreenshot(AbstractPlugin):
 
         self.temp_file_name = str(self.generate_uuid())
         self.shot_path = '{0}{1}.png'.format(str(self.Ahenk.received_dir_path()), self.temp_file_name)
-        self.take_screenshot = 'xwd -root -display :{0} | convert  - jpg:- > ' + self.shot_path
+        self.take_screenshot = 'xwd -root -display :{1} | convert  xwd:- ' + self.shot_path
+        #self.take_screenshot = 'xwd -root -display :{1} | convert  - jpg:- > ' + self.shot_path
         # export command for ltsp
         #self.take_screenshot = 'su {0} -c \' export DISPLAY={1} && scrot ' + self.shot_path + ' \''
         
