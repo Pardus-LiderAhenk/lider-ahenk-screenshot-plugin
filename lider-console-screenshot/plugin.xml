@@ -92,7 +92,7 @@
   	 <extension
   		point="tr.org.liderahenk.liderconsole.core.taskmenu">
   		<taskItem label="%command.task" pluginName="screenshot" 
-  		pluginVersion="1.0.0" 
+  		pluginVersion="1.1" 
   		taskCommandId="tr.org.liderahenk.liderconsole.commands.ScreenshotTask" selectionType="multi" 
   		description="Herhangi bir ahenk makinesinden/lerinden ekran görüntüsü almayı sağlayan eklentidir.&#xA;Ekran görüntüsü almak için tıklayınız.." 
   		imagePath="desktop-image-screenshot.png"/>
