@@ -51,7 +51,7 @@ class TakeScreenshot(AbstractPlugin):
                 self.logger.debug(
                     'Asking for screenshot to user {0} on {1} display'.format(arr[0], arr[1]))
 
-                user_answer = self.ask_permission(':'+arr[1], arr[0],
+                user_answer = self.show_message(':'+arr[1], arr[0],
                                                   "Ekran görüntüsünün alınmasına izin veriyor musunuz?",
                                                   "Ekran Görüntüsü")
 
